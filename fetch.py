@@ -47,14 +47,17 @@ if __name__ == "__main__":
             'Fetched %d followers; %d common followers' % (len(list(itertools.chain(*friendList))), len(commonFriends)))
 
         logger.info('Fetching tweets...')
+        outfile = 'data/output.json'
+        if os.path.isfile(outfile):
+            os.remove(outfile)
         allTweets = []
         for user in users + commonFriends:
             tweets = list(tweepy.Paginator(client.get_users_tweets, user.id, exclude='replies', max_results=100,
                                            tweet_fields=['public_metrics']).flatten(limit=TWEETS_PER_USER))
             logger.info('Fetched %d tweets for account %s' % (len(tweets), user.username))
             allTweets.extend(tweets)
-            with open('output.json', 'a') as outfile:
-                json.dump(tweets, outfile)
+            with open(outfile, 'a') as outfile:
+                json.dump([tweet.data for tweet in tweets], outfile)
                 outfile.write('\n')
 
         logger.info('Done! %d tweets total' % len(allTweets))
