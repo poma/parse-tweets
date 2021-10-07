@@ -56,9 +56,9 @@ if __name__ == "__main__":
                                            tweet_fields=['public_metrics']).flatten(limit=TWEETS_PER_USER))
             logger.info('Fetched %d tweets for account %s' % (len(tweets), user.username))
             allTweets.extend(tweets)
-            with open(outfile, 'a') as outfile:
-                json.dump([tweet.data for tweet in tweets], outfile)
-                outfile.write('\n')
+            with open(outfile, 'a') as f:
+                json.dump([tweet.data for tweet in tweets], f)
+                f.write('\n')
 
         logger.info('Done! %d tweets total' % len(allTweets))
 
